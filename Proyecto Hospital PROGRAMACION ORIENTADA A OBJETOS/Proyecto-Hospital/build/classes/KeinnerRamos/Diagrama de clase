@@ -1,0 +1,101 @@
+class Persona {
+  - String nombre;
+  - String direccion;
+  - String telefono;
+  - String poblacion;
+  - String provincia;
+  - String codigopostal;
+  - String nif;
+  - Int numeroSeguridadSocial;
+}
+
+class Medico {
+  - Int numColegiado;
+  - String categoria;
+  - String horario;
+  - Date fechaAlta;
+  - Date fechaBaja;
+  + asignarCita();
+  + realizarDiagnostico();
+  + prescribirMedicamento();
+}
+
+class Empleado {
+  - String tipo;
+  - Date vacacionesPlanificadas;
+  - Date vacacionesDisfrutadas;
+}
+
+class Paciente {
+  - Medico medicoAsignado;
+  + solicitarCita();
+}
+
+class CitaMedica {
+  - Date fecha;
+  - String hora;
+  - String consultorio;
+  - String ips;
+  - String eps;
+  - Medico medico;
+  - Paciente paciente;
+  + programarCita();
+}
+
+class Diagnostico {
+ - String enfermedad;
+ - List sintomas;
+ - String descripcion;
+}
+
+class Medicamentos {
+  - String nombreComercial;
+  - String nombreGenerico;
+  - String principioActivo;
+  - String laboratorio;
+  - String marca;
+  - String presentacion;
+  - String esGenerico;
+  - String unidad;
+  - String dosisAdulto;
+  - String dosisNino;
+  - String contraindicaciones;
+  - Boolean necesitaReceta;
+  - Boolean coberturaPOS;
+  - Int unidadesDisponibles;
+}
+
+class RecetaMedica {
+  - List<Medicamentos>
+  - Int cantidad;
+  - String dosis;
+  - Date fechaInicio;
+  - Date fechaFin;
+}
+
+class Laboratorio {
+  - String nombre;
+  - String direccion;
+  - String telefono;
+}
+
+class principioActivo {
+  - String nombre;
+}
+
+
+' Relaciones de herencia
+
+Persona <|-- Medico
+Persona <|-- Empleado
+Persona <|-- Paciente
+
+' Relaciones de asociacion
+Paciente "1" --> "1" Medico : medicoAsignado
+CitaMedica "1" --> "1" Medico : medico
+CitaMedica "1" --> "1" Paciente : paciente
+CitaMedica "1" --> "1" Diagnostico : diagnostico
+Diagnostico "1" --> "1..*" Medicamentos : medicamento
+RecetaMedica "1" --> "1..*" Medicamentos : medicamento
+Medicamentos "1" --> "1" Laboratorio : laboratorio
+Medicamentos "|" --> "1..*" PrincipioActivo : principioActivo
