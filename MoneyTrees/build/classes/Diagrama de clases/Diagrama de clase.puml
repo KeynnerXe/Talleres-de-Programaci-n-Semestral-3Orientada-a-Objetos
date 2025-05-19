@@ -1,0 +1,105 @@
+@startuml
+
+class Usuario {
+  - nombre: String
+  - numeroCuenta: String
+  - contrasena: String
+  - saldo: double
+  + Usuario(nombre, numeroCuenta, contrasena)
+  + registrarCuenta(tipo: String): Cuenta
+  + consultarSaldo(): double
+  + agregarTransaccion(t: Transaccion): void
+  + asociarTarjeta(t: TarjetaBancaria): void
+  + realizarTransaccion(monto: double, tipo: String): boolean
+}
+
+class Cuenta {
+  - numeroCuenta: String
+  - saldo: double
+  - tipoCuenta: String
+  + Cuenta(tipoCuenta: String)
+  + consultarSaldo(): double
+  + realizarTransaccion(monto: double, tipo: String): boolean
+}
+
+class Transaccion {
+  - tipo: String
+  - monto: double
+  - fecha: LocalDateTime
+  + Transaccion(tipo: String, monto: double)
+  + mostrarInfo(): String
+}
+
+class HistorialTransacciones {
+  - historial: List<Transaccion>
+  + HistorialTransacciones()
+  + agregarTransaccion(t: Transaccion): void
+  + verHistorial(): List<Transaccion>
+}
+
+class TarjetaBancaria {
+  - numeroTarjeta: String
+  - fechaExpiracion: String
+  - cvv: String
+  + TarjetaBancaria(numeroTarjeta, fechaExpiracion, cvv)
+  + asociarTarjeta(usuario: Usuario): void
+  + desasociarTarjeta(usuario: Usuario): void
+}
+
+class Notificaciones {
+  - mensaje: String
+  - tipoNotificacion: String
+  + Notificaciones(mensaje, tipoNotificacion)
+  + enviarNotificacion(usuario: Usuario): void
+}
+
+class Configuracion {
+  - limiteTransaccion: double
+  - tiempoExpiracionSesion: int
+  + cambiarConfiguracion(limite: double, tiempo: int): void
+}
+
+class Seguridad {
+  - contrasenaEncriptada: String
+  + encriptarContrasena(password: String): String
+  + validarToken(token: String): boolean
+}
+
+class Administrador {
+  - nombreAdmin: String
+  + verReporteDeTransacciones(): List<Transaccion>
+  + gestionarUsuarios(): List<Usuario>
+}
+
+class SaldoInsuficienteException
+class UsuarioNoEncontradoException
+
+class LogicaBilletera {
+  - usuarios: List<Usuario>
+  - administrador: Administrador
+  - configuracion: Configuracion
+  - seguridad: Seguridad
+  - notificaciones: Notificaciones
+  + registrarUsuario(nombre: String, numeroCuenta: String, contrasena: String): boolean
+  + login(numeroCuenta: String, contrasena: String): Usuario
+  + recargarSaldo(usuario: Usuario, monto: double): void
+  + enviarDinero(origen: Usuario, destinoNumeroCuenta: String, monto: double): boolean
+  + gestionAdmin(): Administrador
+}
+
+class Main {
+  + main(args: String[]): void
+}
+
+Usuario "1" -- "0..*" Cuenta : tiene
+Usuario "1" -- "0..*" TarjetaBancaria : asocia
+Usuario "1" -- "0..*" HistorialTransacciones : contiene
+Cuenta "1" -- "0..*" Transaccion : realiza
+HistorialTransacciones "1" -- "0..*" Transaccion : historial
+LogicaBilletera "1" o-- "0..*" Usuario : usuarios
+LogicaBilletera "1" -- "1" Administrador : gestionAdmin
+LogicaBilletera "1" -- "1" Configuracion
+LogicaBilletera "1" -- "1" Seguridad
+LogicaBilletera "1" -- "1" Notificaciones
+Main --> LogicaBilletera : utiliza
+@enduml
